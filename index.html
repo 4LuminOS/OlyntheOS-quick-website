@@ -4,656 +4,168 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark">
-    <meta name="theme-color" content="#0a0e1a">
-    <title>LuminOS - Intelligence. Privacy. Freedom.</title>
-    <meta name="description" content="Your lightweight, private, and AI-integrated Linux distribution.">
-    <style>
-        :root {
-            --bg-dark: #0a0e1a;
-            --bg-card: rgba(21, 25, 37, 0.6); /* Standard card background */
-            --accent-primary: #00d9ff; /* Cyan */
-            --accent-secondary: #ff6b9d; /* Pink */
-            --accent-tertiary: #c471f5; /* Purple */
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --radius: 22px;
-        }
-
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-        }
-        
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0a0e1a 100%);
-            background-attachment: fixed;
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 0;
-            position: relative;
-            overflow-x: hidden;
-        }
-        
-        /* Animated background particles */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 217, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 107, 157, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(196, 113, 245, 0.08) 0%, transparent 50%);
-            pointer-events: none;
-            animation: floatBg 20s ease-in-out infinite;
-            will-change: transform;
-        }
-        
-        @keyframes floatBg {
-            0%, 100% { opacity: 0.5; transform: translateY(0); }
-            50% { opacity: 0.8; transform: translateY(-20px); }
-        }
-        
-        /* Navigation */
-        nav {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            background: rgba(21, 25, 37, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 15px 0;
-            z-index: 100;
-            animation: slideDown 0.5s ease-out;
-        }
-        
-        @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .nav-logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-tertiary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
-        
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-        
-        .nav-links a:hover {
-            color: var(--accent-primary);
-        }
-        
-        /* --- MAIN CONTAINER --- */
-        .main-content {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            /* Ensures footer pushes down */
-            flex: 1; 
-        }
-
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 24px;
-            margin-top: 0;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* --- CARDS (Bento Grid) --- */
-        .card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--radius);
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border: 1px solid rgba(255,255,255,0.08);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.6s ease-out backwards;
-            cursor: pointer;
-        }
-        
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.03), rgba(196, 113, 245, 0.03));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-        
-        .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: rgba(0, 217, 255, 0.4);
-            box-shadow: 
-                0 20px 60px rgba(0, 217, 255, 0.2),
-                0 0 80px rgba(196, 113, 245, 0.1),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-        }
-        
-        .card:hover::before {
-            opacity: 1;
-        }
-        
-        /* Expandable card content */
-        .card-expandable {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out, opacity 0.3s ease-out, margin-top 0.3s ease-out;
-            opacity: 0;
-            margin-top: 0;
-        }
-        
-        .card.expanded .card-expandable {
-            max-height: 800px;
-            opacity: 1;
-            margin-top: 20px;
-        }
-        
-        .expand-indicator {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            font-size: 1.5rem;
-            color: var(--accent-primary);
-            transition: transform 0.3s ease;
-            pointer-events: none;
-        }
-        
-        .card.expanded .expand-indicator {
-            transform: rotate(180deg);
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* --- HERO SECTION --- */
-        .hero {
-            grid-column: span 12;
-            text-align: center;
-            padding: 100px 40px;
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), transparent);
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            position: relative;
-            animation-delay: 0.1s;
-        }
-        
-        /* ... (Hero internals kept same) ... */
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.05) 50%, transparent);
-            animation: shimmer 3s infinite;
-            pointer-events: none;
-        }
-        @keyframes shimmer { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
-
-        h1 {
-            font-size: 5rem;
-            font-weight: 900;
-            letter-spacing: -3px;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #00d9ff 0%, #c471f5 50%, #ff6b9d 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 8s ease infinite;
-            background-size: 200% 200%;
-            position: relative;
-            z-index: 1;
-        }
-        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-        
-        .tagline {
-            font-size: 1.4rem; color: var(--text-muted); margin-bottom: 50px; font-weight: 300; line-height: 1.6; position: relative; z-index: 1;
-        }
-
-        /* --- BUTTONS --- */
-        .btn {
-            display: inline-block; padding: 18px 50px; border-radius: 50px; font-weight: 700; text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1.1rem; position: relative; overflow: hidden; z-index: 1;
-        }
-        .btn::before {
-            content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.3); transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;
-        }
-        .btn:hover::before { width: 400%; height: 400%; }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); color: #fff; box-shadow: 0 10px 40px rgba(0, 217, 255, 0.3);
-        }
-        .btn-primary:hover {
-            transform: translateY(-3px) scale(1.05); box-shadow: 0 20px 60px rgba(0, 217, 255, 0.4), 0 0 80px rgba(196, 113, 245, 0.3);
-        }
-
-        .version-tag {
-            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(255, 215, 61, 0.2)); padding: 8px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 700; margin-bottom: 30px; display: inline-block; color: var(--accent-secondary); border: 1px solid rgba(255, 107, 157, 0.4); animation: pulse 2s ease-in-out infinite; position: relative; z-index: 1;
-        }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 157, 0.3); } 50% { box-shadow: 0 0 40px rgba(255, 107, 157, 0.6); } }
-
-        
-        /* --- FEATURES --- */
-        .feature-ai {
-            grid-column: span 8;
-            background: linear-gradient(135deg, rgba(21, 25, 37, 0.6), transparent);
-            animation-delay: 0.2s;
-        }
-
-        .feature-privacy {
-            grid-column: span 4;
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), transparent);
-            animation-delay: 0.3s;
-        }
-
-        .feature-tech {
-            grid-column: span 4;
-            background: linear-gradient(135deg, rgba(255, 215, 61, 0.05), transparent);
-            animation-delay: 0.4s;
-        }
-        
-        .feature-apps {
-            grid-column: span 8;
-            display: flex; flex-direction: row; align-items: center; justify-content: space-between;
-            background: linear-gradient(135deg, rgba(255, 107, 157, 0.05), transparent);
-            animation-delay: 0.5s;
-        }
-
-        .feature-info {
-            grid-column: span 12;
-            background: linear-gradient(135deg, rgba(196, 113, 245, 0.05), transparent);
-            animation-delay: 0.6s;
-        }
-
-        h2 { font-size: 1.8rem; margin-bottom: 15px; color: #fff; font-weight: 700; background: linear-gradient(135deg, #fff, var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        h3 { font-size: 1.3rem; margin-top: 25px; margin-bottom: 15px; color: var(--accent-primary); font-weight: 600; }
-        p { color: var(--text-muted); line-height: 1.8; font-size: 1.05rem; }
-        
-        .feature-info ul { list-style: none; padding: 0; margin-top: 15px; }
-        .feature-info ul li { color: var(--text-muted); line-height: 1.8; font-size: 1.05rem; padding: 8px 0; padding-left: 25px; position: relative; }
-        .feature-info ul li::before { content: '▸'; position: absolute; left: 0; color: var(--accent-primary); font-weight: bold; }
-
-        .icon { font-size: 3.5rem; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.5)); animation: float 3s ease-in-out infinite; will-change: transform; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        
-        .feature-ai .icon { animation-delay: 0s; }
-        .feature-privacy .icon { animation-delay: 0.5s; filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.6)); }
-        .feature-tech .icon { animation-delay: 1s; filter: drop-shadow(0 0 20px rgba(255, 215, 61, 0.6)); }
-        .feature-apps .icon { animation-delay: 1.5s; filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.4)); }
-        .feature-info .icon { animation-delay: 2s; filter: drop-shadow(0 0 20px rgba(255, 100, 150, 0.4)); }
-        .text-card .icon { animation-delay: 0.7s; filter: drop-shadow(0 0 18px rgba(0, 217, 255, 0.45)); }
-        
-        /* --- FOOTER --- */
-        footer {
-            width: 100%;
-            margin-top: 80px;
-            padding: 40px 20px;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            text-align: center;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        footer:hover { opacity: 1; }
-        footer a { color: var(--accent-primary); text-decoration: none; transition: color 0.3s ease; }
-        footer a:hover { color: var(--accent-secondary); }
-        
-        .footer-container {
-            max-width: 1200px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .footer-links {
-            margin-top: 20px;
-            display: flex;
-            gap: 30px;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            width: 100%;
-        }
-        
-        .social-link {
-            display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 50px; transition: all 0.3s ease;
-        }
-        .social-link:hover { background: rgba(0, 217, 255, 0.1); border-color: var(--accent-primary); transform: translateY(-2px); }
-
-        /* New Text Card */
-        .text-card {
-            grid-column: span 12;
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), transparent);
-            animation-delay: 0.7s;
-            min-height: 200px;
-        }
-        
-        .comparison-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 30px;
-        }
-        
-        .comparison-side {
-            padding: 20px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        
-        .comparison-side h3 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-        }
-        
-        .comparison-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .comparison-list li {
-            padding: 10px 0;
-            padding-left: 30px;
-            position: relative;
-            line-height: 1.6;
-            color: var(--text-muted);
-        }
-        
-        .comparison-list li.pro::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: #00d9ff;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        
-        .comparison-list li.con::before {
-            content: '✗';
-            position: absolute;
-            left: 0;
-            color: #ff6b9d;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .hero, .feature-ai, .feature-privacy, .feature-tech, .feature-apps, .feature-info, .text-card { grid-column: span 1; }
-            h1 { font-size: 3rem; }
-            .hero { padding: 60px 30px; }
-            .feature-apps { flex-direction: column; align-items: flex-start; }
-            .nav-links { gap: 15px; }
-            .nav-logo { font-size: 1.2rem; }
-            .footer-links { gap: 15px; }
-            .social-link { font-size: 0.85rem; padding: 8px 12px; }
-            footer { padding: 30px 15px; }
-            .comparison-container { grid-template-columns: 1fr; gap: 20px; }
-        }
-        
-        .accent-text { color: var(--accent-primary); font-weight: 700; }
-        .highlight { background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; }
-        .decorative-icon { font-size: 5rem; opacity: 0.15; margin-right: 20px; }
-        .footer-text { margin-top: 30px; }
-    </style>
+    <meta name="theme-color" content="#080808">
+    <title>LuminOS — Intelligence. Privacy. Freedom.</title>
+    <meta name="description" content="A lightweight, private, AI-integrated Linux distribution built on Debian 13.">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <nav>
-        <div class="nav-container">
-            <div class="nav-logo">LuminOS</div>
+        <div class="nav-inner">
+            <a href="./" class="nav-logo">LuminOS</a>
             <div class="nav-links">
                 <a href="#features">Features</a>
-                 <a href="https://github.com/4LuminOS/build-scripts/releases" target="_blank" rel="noopener noreferrer">Download</a>
+                <a href="https://github.com/4LuminOS/build-scripts/releases" target="_blank" rel="noopener noreferrer">Download</a>
                 <a href="https://github.com/4LuminOS" target="_blank" rel="noopener noreferrer">GitHub</a>
             </div>
         </div>
     </nav>
 
-    <div class="main-content">
-        <div class="container">
-            <div class="card hero" id="download">
-                <span class="version-tag">⭐ FIRST ISO RELEASE COMING SOON! ⭐</span>
+    <main>
+
+        <section class="hero">
+            <div class="hero-inner">
+                <span class="badge">Alpha — First ISO coming soon</span>
                 <h1>LuminOS</h1>
-                <p class="tagline">Where intelligence meets ethics. <br>A private, AI-integrated OS built for modern machines.</p>
-                
-                <div>
-                    <a href="https://github.com/4LuminOS/build-scripts/releases" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Get LuminOS Now!</a>
+                <p class="tagline">Where intelligence meets ethics.<br>A private, AI-integrated OS built for modern machines.</p>
+                <a href="https://github.com/4LuminOS/build-scripts/releases" class="btn" target="_blank" rel="noopener noreferrer">Get LuminOS</a>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="section-inner">
+                <p class="section-label">Features</p>
+                <div class="features-grid">
+
+                    <article class="feature">
+                        <span class="feature-num">01</span>
+                        <div class="feature-body">
+                            <h2>Powered by Lumin</h2>
+                            <p>An integrated AI assistant based on <strong>Llama 3</strong>. Runs 100% locally — no cloud, no data leaks, no subscription. It helps you write, navigate, think, and work efficiently.</p>
+                            <button class="feature-toggle" aria-expanded="false">More details</button>
+                            <div class="feature-expandable">
+                                <p>Lumin uses advanced natural language processing to understand your queries and provide intelligent responses. It helps with coding, writing, research, and actions across LuminOS — while keeping your data private and secure on your machine.</p>
+                                <p>The AI model is optimized for performance and runs efficiently on modern hardware, providing quick responses without cloud connectivity.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="feature">
+                        <span class="feature-num">02</span>
+                        <div class="feature-body">
+                            <h2>Privacy First</h2>
+                            <p>Zero telemetry by default. Your data never leaves local storage. No one scrutinizes it. You are the sole owner — Swiss philosophy applied to computing.</p>
+                            <button class="feature-toggle" aria-expanded="false">More details</button>
+                            <div class="feature-expandable">
+                                <p>LuminOS has no tracking, no analytics, and no hidden data collection. Your files, conversations with Lumin, and usage patterns stay completely private.</p>
+                                <p>Built with privacy-focused tools and open-source components you can audit yourself.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="feature">
+                        <span class="feature-num">03</span>
+                        <div class="feature-body">
+                            <h2>Debian Core</h2>
+                            <p>Built on the rock-solid foundation of <strong>Debian 13 "Trixie"</strong>. Stability, modern software compatibility, and AI-driven actions — all in one.</p>
+                            <button class="feature-toggle" aria-expanded="false">More details</button>
+                            <div class="feature-expandable">
+                                <p>Debian provides a stable, secure, and well-tested foundation. Thousands of packages, excellent hardware support, and the reliability of enterprise Linux with modern desktop flexibility.</p>
+                                <p>Regular security updates and long-term support keep your system functional and safe.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="feature">
+                        <span class="feature-num">04</span>
+                        <div class="feature-body">
+                            <h2>Batteries Included</h2>
+                            <p>Productivity out of the box: <strong>OnlyOffice</strong>, <strong>VLC</strong>, <strong>Timeshift</strong>, and full <strong>Flatpak</strong> support. Everything you need from day one.</p>
+                            <button class="feature-toggle" aria-expanded="false">More details</button>
+                            <div class="feature-expandable">
+                                <p>Pre-installed applications cover a full office suite, media player, and system backup tool — plus access to thousands of Flatpak applications.</p>
+                                <p>Software management works with both graphical tools and the command line.</p>
+                            </div>
+                        </div>
+                    </article>
+
                 </div>
             </div>
+        </section>
 
-            <div class="card feature-ai" id="features" onclick="toggleCard(this)"> 
-                <div class="icon">🧠</div>
-                <h2>Powered by Lumin</h2>
-                <p>An integrated AI assistant based on <span class="highlight">Llama 3</span>. It runs <span class="accent-text">100% locally</span> on your device. No cloud, no data leaks, and no subscription. It helps you write, navigate, think, and WORK efficiently.</p>
-                <div class="card-expandable">
-                    <h3>Additional Details</h3>
-                    <p>Lumin is a LLM, he uses advanced natural language processing to understand your queries and provide intelligent responses. It can help with coding, writing, research, actions across your LuminOS and much more... while also keeping your data private and secure on your lovely machine.</p>
-                    <p>He lives at the center of LuminOS. The AI model is optimized for performance and runs efficiently on modern hardware, providing quick responses without requiring cloud connectivity.</p>
-                </div>
-                <span class="expand-indicator">▼</span>
-            </div>
-
-            <div class="card feature-privacy" onclick="toggleCard(this)">
-                <div class="icon">🛡️</div>
-                <h2>Privacy First</h2>
-                <p>Swiss philosophy; <span class="accent-text">Zero telemetry</span>. Because your computer is your computer: By default, your data never leaves your local storage, and no one will scrutinize it. You are the sole owner.</p>
-                <div class="card-expandable">
-                    <h3>Additional Details</h3>
-                    <p>We deeply believe in transparency and user control. LuminOS comes with no tracking, no analytics, and no hidden data collection. Your files, data, your conversations with Lumin, and your usage patterns really stay completely private.</p>
-                    <p>Built with privacy-focused tools and open-source components that you can audit yourself if you want!</p>
-                </div>
-                <span class="expand-indicator">▼</span>
-            </div>
-
-            <div class="card feature-tech" onclick="toggleCard(this)">
-                <div class="icon">⚡</div>
-                <h2>Debian Core</h2>
-                <p>Built on the rock-solid foundation of <span class="accent-text">Debian 13 "Trixie"</span>. Stability meets modern software compatibility and AI-driven actions.</p>
-                <div class="card-expandable">
-                    <h3>Additional Details</h3>
-                    <p>Debian provides a very stable, secure, and well-tested foundation. With thousands of packages available and excellent hardware support, you get the reliability of enterprise Linux with the flexibility of a modern desktop system.</p>
-                    <p>Regular security updates and long-term support ensure your system stays secure and functional.</p>
-                </div>
-                <span class="expand-indicator">▼</span>
-            </div>
-
-            <div class="card feature-apps" onclick="toggleCard(this)">
-                <div>
-                    <h2>"Batteries Included"</h2>
-                    <p>Productivity out of the box with <span class="accent-text">OnlyOffice</span>, <span class="accent-text">VLC</span>, <span class="accent-text">Timeshift</span>, and full <span class="accent-text">Flatpak</span> support. But that's not all!</p>
-                    <div class="card-expandable">
-                        <h3>Additional Details</h3>
-                        <p>Pre-installed applications include a full office suite, media player, system backup tool, and access to thousands of Flatpak applications. Everything you need to be productive from day one.</p>
-                        <p>Easy software management with graphical tools and command-line options for the rest of us...</p>
+        <section class="specs">
+            <div class="section-inner">
+                <p class="section-label">Requirements</p>
+                <div class="specs-grid">
+                    <div class="specs-col">
+                        <h3>Minimum</h3>
+                        <p class="specs-note">To run LuminOS + Lumin AI</p>
+                        <ul class="specs-list">
+                            <li><span>CPU</span> 6 cores or higher (AVX2 required)</li>
+                            <li><span>RAM</span> 8 GB+ (Lumin requires ~5 GB)</li>
+                            <li><span>Storage</span> 64 GB free — SSD strongly recommended</li>
+                            <li><span>GPU</span> Integrated graphics work; dedicated GPU accelerates AI response time</li>
+                        </ul>
+                    </div>
+                    <div class="specs-col">
+                        <h3>Recommended</h3>
+                        <p class="specs-note">For the best experience</p>
+                        <ul class="specs-list">
+                            <li><span>CPU</span> 8+ cores</li>
+                            <li><span>RAM</span> 16 GB+</li>
+                            <li><span>Storage</span> 128 GB+ NVMe SSD</li>
+                            <li><span>GPU</span> Dedicated GPU with 4 GB+ VRAM</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="icon">📦</div>
-                <span class="expand-indicator">▼</span>
             </div>
+        </section>
 
-            <div class="card feature-info" onclick="toggleCard(this)">
-                <div class="icon">⚙️</div>
-                <h2>Tech & Requirements</h2>
-                <p>We will give more technical information on <span class="accent-text">LuminOS</span> very soon! Thank you.</p>
-    
-                <h3>Minimum Requirements (To run LuminOS + Lumin)</h3>
-        <ul>
-            <li>
-                <span class="accent-text">Processor:</span> 6 Cores or higher (Must support AVX2 instructions)
-            </li>
-            <li>
-                <span class="accent-text">RAM:</span> 8 GB+ (The AI model requires ~5GB of free RAM to load).
-            </li>
-            <li>
-                <span class="accent-text">Storage:</span> 64GB+ free space (use of an SSD highly recommended).
-            </li>
-            <li>
-                <span class="accent-text">GPU/Graphics:</span> NVIDIA/AMD Dedicated GPU (Accelerates Lumin's response time); integrated graphics will also work.
-            </li>
-        </ul>
-        <div class="card-expandable">
-            <h3>Recommended Specifications</h3>
-            <ul>
-                <li><span class="accent-text">Processor:</span> 8+ Cores for optimal AI performance</li>
-                <li><span class="accent-text">RAM:</span> 16 GB+ for smoother multitasking</li>
-                <li><span class="accent-text">Storage:</span> 128GB+ NVMe SSD for best experience</li>
-                <li><span class="accent-text">GPU:</span> Dedicated GPU with 4GB+ VRAM for fastest AI responses</li>
-            </ul>
-        </div>
-        <span class="expand-indicator">▼</span>
-    </div>
-
-            <div class="card text-card" onclick="toggleCard(this)">
-                <div class="icon">⚖️</div>
-                <h2>Compare & Choose :D</h2>
-                <p>Side-by-side comparison to help you make the right decision!</p>
-                
-                <div class="comparison-container" role="region" aria-label="Comparison between Option A and Option B">
-                    <div class="comparison-side">
-                        <h3>LuminOS (Alpha)</h3>
-                        <ul class="comparison-list">
+        <section class="compare">
+            <div class="section-inner">
+                <p class="section-label">Compare</p>
+                <div class="compare-grid">
+                    <div class="compare-col">
+                        <h3>LuminOS <span class="badge-inline">Alpha</span></h3>
+                        <ul class="compare-list">
                             <li class="pro">Mostly stable, thanks to Debian 13</li>
-                            <li class="pro">LTS, yet still very up-to-date</li>
+                            <li class="pro">LTS foundation, yet still up-to-date</li>
                             <li class="pro">Great selection of FOSS out of the box</li>
-                            <li class="con">Hard to run for older devices</li>
-                            <li class="con">Experimental OS; not currently ready for use</li>
+                            <li class="con">Hard to run on older hardware</li>
+                            <li class="con">Experimental — not ready for daily use yet</li>
                         </ul>
                     </div>
-                    
-                    <div class="comparison-side">
-                        <h3>Other general GNU Linux OSs</h3>
-                        <ul class="comparison-list">
+                    <div class="compare-col">
+                        <h3>General GNU/Linux</h3>
+                        <ul class="compare-list">
                             <li class="pro">Generally well-established</li>
-                            <li class="pro">Long-term support & non-LTS options</li>
-                            <li class="pro">Clear documentation and many contributors</li>
-                            <li class="con">Lack of great AI-driven features</li>
-                            <li class="con">UI that doesn't feel fresh and/or modern</li>
+                            <li class="pro">Long-term and non-LTS options available</li>
+                            <li class="pro">Thorough documentation, many contributors</li>
+                            <li class="con">Lacks meaningful AI-driven features</li>
+                            <li class="con">UI often feels dated or inconsistent</li>
                         </ul>
                     </div>
                 </div>
-                <div class="card-expandable">
-                    <h3>More Comparison Details...</h3>
-                    <p>This comparison is based on 'general' and 'average' well-known distributions; however, it does not necessarily apply to all cases or OSs</p>
-                </div>
-                <span class="expand-indicator">▼</span>
+                <p class="compare-note">Based on general, well-known distributions. Does not apply to all cases.</p>
             </div>
+        </section>
 
-        </div>
-    </div>
+    </main>
 
     <footer>
-        <div class="footer-container">
+        <div class="footer-inner">
+            <p class="footer-copy">&copy; 2025 The LuminOS Project &mdash; <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer">GPL-3.0</a>. Designed by Gabriel.</p>
             <div class="footer-links">
-            
-            <a href="https://github.com/4LuminOS" class="social-link" target="_blank" rel="noopener noreferrer">
-                <span>🐙</span> GitHub
-            </a>
-            <a href="https://github.com/4LuminOS/build-scripts/releases" class="social-link" target="_blank" rel="noopener noreferrer">
-                <span>📥</span> Download
-            </a>
-
-             <a href="https://x.com/4LuminOS" class="social-link" target="_blank" rel="noopener noreferrer">
-                <span>🐦</span> X (Tweeter)
-            </a>
-
-             <a href="https://www.instagram.com/4luminos/" class="social-link" target="_blank" rel="noopener noreferrer">
-                <span>📸</span> Instagram
-            </a>
-
-             <a href="https://mastodon.social/@LuminOS" class="social-link" target="_blank" rel="noopener noreferrer">
-                <span>🦣</span> Mastodon
-            </a>
-            
-        </div>
-        <p class="footer-text">&copy; 2025, The LuminOS Project. 100% Open Source: under <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer">GPL-3.0</a>.</p>
-        <p>Designed by Gabriel</p>
+                <a href="https://github.com/4LuminOS" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://github.com/4LuminOS/build-scripts/releases" target="_blank" rel="noopener noreferrer">Download</a>
+                <a href="https://x.com/4LuminOS" target="_blank" rel="noopener noreferrer">X</a>
+                <a href="https://www.instagram.com/4luminos/" target="_blank" rel="noopener noreferrer">Instagram</a>
+                <a href="https://mastodon.social/@LuminOS" target="_blank" rel="noopener noreferrer">Mastodon</a>
+            </div>
         </div>
     </footer>
 
-    <script>
-        function toggleCard(card) {
-            card.classList.toggle('expanded');
-            const isExpanded = card.classList.contains('expanded');
-            card.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
-        }
-        
-        // Add keyboard support
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.card[onclick]');
-            cards.forEach(card => {
-                card.setAttribute('tabindex', '0');
-                card.setAttribute('role', 'button');
-                card.setAttribute('aria-expanded', 'false');
-                card.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        toggleCard(this);
-                    }
-                });
-            });
-        });
-    </script>
-
+    <script src="app.js"></script>
 </body>
 </html>
